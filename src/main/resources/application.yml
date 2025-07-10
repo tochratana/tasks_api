@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: task-management-api
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/task_management
+    username: your_username
+    password: your_password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  security:
+    user:
+      name: admin
+      password: admin
+
+jwt:
+  secret: mySecretKeyForJWTTokenGenerationAndValidation
+  expiration: 86400000 # 24 hours in milliseconds
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.tochratana.task: DEBUG
+    org.springframework.security: DEBUG

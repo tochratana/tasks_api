@@ -1,7 +1,8 @@
 package com.tochratana.task.domain;
 
 public enum TaskStatus {
-    TODO,
+    PENDING,
     IN_PROGRESS,
-    DONE
+    COMPLETED,
+    CANCELLED
 }

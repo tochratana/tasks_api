@@ -1,51 +1,104 @@
 package com.tochratana.task.service.impl;
 
 import com.tochratana.task.domain.User;
-import com.tochratana.task.dto.UserCreateRequestDto;
-import com.tochratana.task.dto.UserResponse;
+import com.tochratana.task.dto.*;
 import com.tochratana.task.repository.UserRepository;
 import com.tochratana.task.service.UserService;
+import com.tochratana.task.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
     @Override
-    public UserResponse createUser(UserCreateRequestDto userCreateRequestDto) {
+    public AuthResponseDto register(RegisterRequestDto registerRequestDto) {
+        if (userRepository.existsByEmail(registerRequestDto.email())) {
+            throw new RuntimeException("Email already exists");
+        }
 
-        // Step 1: Map from RequestDto → Entity
         User user = new User();
-        user.setFullName(userCreateRequestDto.fullName());
-        user.setEmail(userCreateRequestDto.email());
-        user.setPassword(userCreateRequestDto.password());
+        user.setFullName(registerRequestDto.fullName());
+        user.setEmail(registerRequestDto.email());
+        user.setPassword(passwordEncoder.encode(registerRequestDto.password()));
 
-        // Step 2: Save user
         user = userRepository.save(user);
 
-        // Step 3: Map from Entity → ResponseDto
-        return new UserResponse(
-                user.getFullName(),
-                user.getEmail()
-        );
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        UserResponse userResponse = new UserResponse(user.getFullName(), user.getEmail());
+
+        return new AuthResponseDto(token, "Bearer", userResponse);
     }
 
     @Override
+    public AuthResponseDto login(LoginRequestDto loginRequestDto) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequestDto.email(),
+                        loginRequestDto.password()
+                )
+        );
+
+        String token = jwtUtil.generateToken(loginRequestDto.email());
+
+        User user = userRepository.findByEmail(loginRequestDto.email())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        UserResponse userResponse = new UserResponse(user.getFullName(), user.getEmail());
+
+        return new AuthResponseDto(token, "Bearer", userResponse);
+    }
+
+    @Override
+    public UserResponse createUser(UserCreateRequestDto userCreateRequestDto) {
+        User user = new User();
+        user.setFullName(userCreateRequestDto.fullName());
+        user.setEmail(userCreateRequestDto.email());
+        user.setPassword(passwordEncoder.encode(userCreateRequestDto.password()));
+
+        user = userRepository.save(user);
+
+        return new UserResponse(user.getFullName(), user.getEmail());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<UserResponse> findAllUser() {
-        // create a list for user
         List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> new UserResponse(user.getFullName(), user.getEmail()))
+                .toList();
+    }
 
-        // create a list for user response data
-        List<UserResponse> userResponseList = users.stream().map(user ->
-                new UserResponse(
-                        user.getFullName(),
-                        user.getEmail()
-                )).toList();
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponse getCurrentUser() {
+        User user = getCurrentUserEntity();
+        return new UserResponse(user.getFullName(), user.getEmail());
+    }
 
-        return userResponseList;
+    @Override
+    @Transactional(readOnly = true)
+    public User getCurrentUserEntity() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
