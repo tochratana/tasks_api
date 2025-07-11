@@ -37,13 +37,15 @@ public class TaskServiceImpl implements TaskService {
         task.setPriority(taskCreateRequestDto.priority());
         task.setUser(currentUser);
 
-        // Add notes if provided
+        // ✅ If notes are provided
         if (taskCreateRequestDto.noteContents() != null) {
+            // Move this block after `task` is fully initialized
+            Task finalTask = task;
             List<Note> notes = taskCreateRequestDto.noteContents().stream()
                     .map(content -> {
                         Note note = new Note();
                         note.setContent(content);
-                        note.setTask(task);
+                        note.setTask(finalTask); // ✅ task is effectively final now
                         return note;
                     })
                     .collect(Collectors.toList());
@@ -54,6 +56,7 @@ public class TaskServiceImpl implements TaskService {
 
         return mapToTaskResponse(task);
     }
+
 
     @Override
     @Transactional(readOnly = true)
