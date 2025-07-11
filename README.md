@@ -1,12 +1,14 @@
-Key Features Implemented:
-🔐 Authentication & Security
+# TASK NOTE API
+
+## Key Features Implemented:
+### 1. Authentication & Security
 
 JWT-based authentication with register/login endpoints
 Password encryption using BCrypt
 Protected routes requiring authentication
 User-specific data access (users can only see their own tasks/notes)
 
-📋 Task Management
+### 2. Task Management
 
 Full CRUD operations for tasks
 Task filtering by status
@@ -14,26 +16,26 @@ Due date support
 Priority levels (LOW, MEDIUM, HIGH, URGENT)
 Task status tracking (PENDING, IN_PROGRESS, COMPLETED, CANCELLED)
 
-📝 Note Management
+### 3. Note Management
 
 Add notes to tasks
 Full CRUD operations for notes
 Notes are tied to specific tasks and users
 
-🛡️ Security & Validation
+### 4.️ Security & Validation
 
 Input validation with proper error messages
 Global exception handling
 JWT token validation
 User authorization checks
 
-🗄️ Database
+### 5. Database
 
 Enhanced entity relationships
 Proper foreign key constraints
 Automatic timestamp management
 PostgreSQL support
-
+```
 API Endpoints:
 Authentication
 
@@ -72,3 +74,4 @@ Use the returned JWT token in the Authorization: Bearer <token> header for prote
 
 
 Create Tasks: Use the JWT token to create and manage tasks and notes
+```
