@@ -3,9 +3,9 @@ spring:
     name: task-management-api
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/tasks
+    url: jdbc:postgresql://dpg-d3ejn5er433s73eo9fqg-a.oregon-postgres.render.com:5432/task_db_lvyo
     username: tochratana
-    password: 123
+    password: QbDZ7VihL6kLr9xf6Kv0r5D9Y7BZ2WOS
     driver-class-name: org.postgresql.Driver
 
   jpa:

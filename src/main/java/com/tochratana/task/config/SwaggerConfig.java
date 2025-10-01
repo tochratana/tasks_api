@@ -24,11 +24,11 @@ public class SwaggerConfig {
                 .components(new Components()
                         .addSecuritySchemes(SECURITY_SCHEME_NAME,
                                 new SecurityScheme()
-                                        .name(SECURITY_SCHEME_NAME)
-                                        .type(SecurityScheme.Type.HTTP)
-                                        .scheme("bearer")
-                                        .bearerFormat("JWT")
-                                        .description("Enter JWT token")))
+                                    .name(SECURITY_SCHEME_NAME)
+                                    .type(SecurityScheme.Type.HTTP)
+                                    .scheme("bearer")
+                                    .bearerFormat("JWT")
+                                    .description("Enter JWT token")))
                 // Apply security globally to all endpoints
                 .addSecurityItem(new SecurityRequirement()
                         .addList(SECURITY_SCHEME_NAME));
