@@ -42,12 +42,12 @@ Authentication
 POST /api/auth/register - Register new user
 POST /api/auth/login - Login user
 
-Users
+> Users
 
 GET /api/users/me - Get current user info
 GET /api/users - Get all users (admin)
 
-Tasks
+> Tasks
 
 POST /api/tasks - Create task
 GET /api/tasks - Get all tasks (with optional status filter)
@@ -55,14 +55,14 @@ GET /api/tasks/{id} - Get specific task
 PUT /api/tasks/{id} - Update task
 DELETE /api/tasks/{id} - Delete task
 
-Notes
+> Notes
 
 POST /api/tasks/{taskId}/notes - Add note to task
 GET /api/tasks/{taskId}/notes - Get all notes for task
 PUT /api/tasks/{taskId}/notes/{noteId} - Update note
 DELETE /api/tasks/{taskId}/notes/{noteId} - Delete note
 
-To get started:
+> To get started:
 
 Database Setup: Create a PostgreSQL database and update the connection details in application.yml
 Run the Application: The API will be available at http://localhost:8080
