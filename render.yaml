@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: spring-boot-app
+    env: docker
+    plan: free        # or starter/standard depending on your choice
+    autoDeploy: true
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
